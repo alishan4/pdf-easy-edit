@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDFEasyEdit — Free PDF & Image Tools</title>
+  <meta name="description" content="Edit PDF, compress images, PDF to image, image to PDF and more. Free, privacy-first, no signup, professional UI like iLovePDF.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container flex justify-between items-center">
+      <a href="/" class="text-xl font-bold text-primary logo">PDFEasyEdit</a>
+      <nav class="nav">
+        <a href="#editor" class="nav-link">PDF Editor</a>
+        <a href="#img-compressor" class="nav-link">Image Compressor</a>
+        <a href="#pdf2img" class="nav-link">PDF to Image</a>
+        <a href="#img2pdf" class="nav-link">Image to PDF</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#about" class="nav-link">About</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <!-- PDF Editor Section -->
+    <section id="editor" class="editor-section">
+      <div class="container">
+        <h1 class="text-3xl font-bold mb-4 text-primary">Professional Free Online PDF Editor</h1>
+        <p class="text-lg mb-6">Upload your PDF, edit comfortably like iLovePDF: nested pages, full toolbar, privacy-first. No watermarks, no servers.</p>
+        <input type="file" id="pdf-upload" accept=".pdf" class="mb-4 p-2 border rounded bg-white">
+        <button id="reset-btn" class="btn btn-secondary" disabled>Reset</button>
+        <button id="download-btn" class="btn btn-success" disabled>Download Edited PDF</button>
+        <div id="file-status" class="mt-4 text-gray-600">No PDF uploaded yet.</div>
+      </div>
+      <section class="toolbar">
+        <div class="container flex items-center flex-wrap gap-2">
+          <div class="flex gap-2 flex-wrap items-center">
+            <select id="tool-select" class="p-2 border rounded" disabled>
+              <option value="select">Select/Move</option>
+              <option value="edit-text">Edit Text</option>
+              <option value="text">Add Text</option>
+              <option value="draw">Draw</option>
+              <option value="shape">Add Rectangle</option>
+              <option value="highlight">Highlight</option>
+              <option value="erase">Erase</option>
+            </select>
+            <select id="font-family" class="p-2 border rounded" disabled>
+              <option>Inter</option>
+              <option>Roboto</option>
+              <option>Arial</option>
+              <option>Courier New</option>
+            </select>
+            <input id="font-size" type="number" min="8" max="72" value="16" class="w-16 p-2 border rounded" disabled>
+            <input id="color-picker" type="color" value="#000000" disabled>
+            <input type="file" id="add-image-input" accept="image/*" style="display:none;">
+            <button id="add-image-btn" class="btn btn-secondary" disabled>Add Image</button>
+            <label style="margin-left:8px;display:flex;align-items:center;gap:3px;">
+              <input type="checkbox" id="mask-old-text" checked>
+              Mask old text
+            </label>
+          </div>
+          <div class="flex gap-2 ml-auto flex-wrap items-center">
+            <button id="undo-btn" class="btn btn-secondary" disabled>Undo</button>
+            <button id="redo-btn" class="btn btn-secondary" disabled>Redo</button>
+            <div class="zoom-control flex items-center gap-2">
+              <label>Zoom:</label>
+              <input id="zoom-slider" type="range" min="50" max="300" value="100" disabled>
+              <span id="zoom-value">100%</span>
+            </div>
+            <div class="page-nav flex gap-2">
+              <button id="prev-page" class="btn btn-secondary" disabled>Previous</button>
+              <span id="page-info">Page 1 / 1</span>
+              <button id="next-page" class="btn btn-secondary" disabled>Next</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="container">
+        <div id="pdf-pages" class="flex flex-col items-center">
+          <div class="empty-message text-center text-gray-500 py-8">Upload a PDF to start editing. Pages will appear nested below with professional overlays for comfortable editing.</div>
+        </div>
+      </div>
+    </section>
+    <!-- Image Compressor Tool -->
+    <section id="img-compressor" class="features">
+      <div class="container">
+        <h2 class="text-2xl font-bold mb-4 text-primary">Image Compressor (Browser Only)</h2>
+        <input type="file" id="img-upload" accept="image/*" class="mb-2 p-2 border rounded bg-white">
+        <div class="flex items-center gap-2 mb-2">
+          <label>Quality:</label>
+          <input type="range" id="img-quality" min="10" max="100" value="80">
+          <span id="img-quality-val">80%</span>
+        </div>
+        <div id="img-preview" style="margin-bottom:1rem;"></div>
+        <button id="img-download-btn" class="btn btn-success" style="display:none;">Download Compressed Image</button>
+        <div id="img-status" class="text-gray-600"></div>
+      </div>
+    </section>
+    <!-- PDF to Image Tool -->
+    <section id="pdf2img" class="features">
+      <div class="container">
+        <h2 class="text-2xl font-bold mb-4 text-primary">PDF to Image Converter</h2>
+        <input type="file" id="pdf2img-upload" accept=".pdf" class="mb-2 p-2 border rounded bg-white">
+        <button id="pdf2img-download-all" class="btn btn-success" style="display:none;">Download All Images (ZIP)</button>
+        <div id="pdf2img-preview" style="margin:1rem 0;"></div>
+        <div id="pdf2img-status" class="text-gray-600"></div>
+      </div>
+    </section>
+    <!-- Image to PDF Tool -->
+    <section id="img2pdf" class="features">
+      <div class="container">
+        <h2 class="text-2xl font-bold mb-4 text-primary">Image to PDF Converter</h2>
+        <input type="file" id="img2pdf-upload" accept="image/*" multiple class="mb-2 p-2 border rounded bg-white">
+        <button id="img2pdf-download-btn" class="btn btn-success" style="display:none;">Download PDF</button>
+        <div id="img2pdf-preview" style="margin:1rem 0;" class="flex flex-wrap gap-2"></div>
+        <div id="img2pdf-status" class="text-gray-600"></div>
+      </div>
+    </section>
+    <section id="features" class="features">
+      <div class="container">
+        <h2 class="text-2xl font-bold mb-4 text-primary">Features</h2>
+        <div class="feature-grid">
+          <div class="card">
+            <h3 class="font-semibold text-primary">PDF Editor</h3>
+            <p>Edit PDFs visually: add/edit text, shapes, images, highlight, draw, undo/redo, zoom, page navigation, download. Mask & overlay for privacy. <a href="#editor" class="text-primary underline">Try now</a></p>
+          </div>
+          <div class="card">
+            <h3 class="font-semibold text-primary">Image Compressor</h3>
+            <p>Compress images in your browser, set quality, preview & download. <a href="#img-compressor" class="text-primary underline">Try now</a></p>
+          </div>
+          <div class="card">
+            <h3 class="font-semibold text-primary">PDF to Image</h3>
+            <p>Convert each page of a PDF to PNG images in your browser. <a href="#pdf2img" class="text-primary underline">Try now</a></p>
+          </div>
+          <div class="card">
+            <h3 class="font-semibold text-primary">Image to PDF</h3>
+            <p>Combine images into a single PDF, drag to reorder, download in one click. <a href="#img2pdf" class="text-primary underline">Try now</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="about" class="about">
+      <div class="container">
+        <h2 class="text-2xl font-bold mb-4 text-primary">About PDFEasyEdit</h2>
+        <p>
+          A better free PDF and image tool suite inspired by iLovePDF. Edit PDFs, compress images, convert PDF to images and images to PDF. 
+          Built with PDF.js, PDF-lib, Fabric.js. SEO-optimized, privacy-first: everything runs in your browser, no uploads.
+        </p>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      © <span id="year"></span> PDFEasyEdit — Free & Private
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
