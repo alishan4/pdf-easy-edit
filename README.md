@@ -10,6 +10,3 @@ A professional, browser-based PDF editor. Edit PDFs online for free with no wate
 
 ## Deployment
 Deployed on Vercel: [Live Site](https://pdf-easy-edit.vercel.app)
-
-## Keywords for SEO
-Edit PDF online free no watermark, free PDF editor in browser.
